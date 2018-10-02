@@ -25,56 +25,61 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      ishow:true,
-      regshow:false,
-      register:'注册',
+      ishow: true,
+      regshow: false,
+      register: '注册',
       msg: '欢迎进入登录系统',
-      name:'请输入您的帐号',
-      mima:'请输入您的密码',
-      login:'登录',
-      condition:'还没注册？请先注册',
-      newcondition:'注册成功，请登录',
-      ename:'',
-      epassword:'',
-      newname:'',
-      newpassword:''
+      name: '请输入您的帐号',
+      mima: '请输入您的密码',
+      login: '登录',
+      condition: '还没注册？请先注册',
+      newcondition: '注册成功，请登录',
+      ename: '',
+      epassword: '',
+      newname: '',
+      newpassword: ''
     }
   },
-  methods:{
-      enter:function(str){
-          if(str==this.name)this.name="";
-          if(str==this.mima)this.mima=""
-      },
-      leave:function(){
-      if(this.name=="")this.name="请输入您的帐号";
-      if(this.mima=="")this.mima="请输入您的密码"
-      },
-      Login(){
-      if(this.ename==''||this.epassword==''){
-          alert("请输入账号或密码")
-        }
+  methods: {
+    enter: function (str) {
+      if (str === this.name) this.name = ''
+      if (str === this.mima) this.mima = ''
+    },
+    leave: function () {
+      if (this.name === '') this.name = '请输入您的帐号'
+      if (this.mima === '') this.mima = '请输入您的密码'
+    },
+    Login () {
+      if (this.ename === '' || this.epassword === '') {
+        alert('请输入账号或密码')
+      }
       //  const data={ename:this.ename,epassword:this.epassword}
       //  this.$http.post('http://192.168.1.1:3000/users',data).then(function(res){
       //  console.log(res);
       //  this.$router.push({name:'home',params:{id:this.ename}})
       //  })
-      else if(this.ename&&this.epassword=='123'){
-            this.$router.push({name:'home',params:{id:this.ename}})
-            }
-
-      },
-      Register(){},
-      showlogin(){
-      this.ishow=true;
-      this.regshow=false;
-      },
-      showregister(){
-        this.ishow=false;
-        this.regshow=true;
+      else if (this.ename && this.epassword == '123') {
+        this.$router.push({name: 'home', params: {id: this.ename}})
       }
+    },
+    Register () {},
+    showlogin () {
+      this.ishow = true
+      this.regshow = false
+    },
+    showregister () {
+      this.ishow = false
+      this.regshow = true
+    }
   },
-  watch:{
-      msg:function(n,o){}
+  watch: {
+    msg: function (n, o) {}
+  },
+  mounted () {
+    console.log(111)
+    this.$http.post('/some/post', {sss: 'aaa'}).then(res => {
+      console.log(res)
+    })
   }
 }
 </script>

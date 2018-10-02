@@ -13,6 +13,31 @@ const portfinder = require('portfinder')
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
+const sql = require('mssql')
+
+async function ggg(res) {
+    try {
+        await sql.connect('mssql://sa:zx156239@211.149.182.30:1433/jjrj')
+        const result = await sql.query`select * from BlogUsers`
+        let restful = {
+          rc:1,
+          rm:"请求成功",
+          rs:result
+        }
+        res.json(restful);
+    } catch (err) {
+        // ... error checks
+        let restful = {
+          rc:1,
+          rm:"请求错误",
+          rs:err
+        }
+        res.json(restful);
+    } finally {
+      sql.close()
+    }
+}
+
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
@@ -22,6 +47,24 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+    before: function(app) {
+      app.post('/some/post', function(req, res) {
+        req.rawBody = ''
+        req.on('data', function(chunk) {
+            req.rawBody += chunk;
+        });
+        req.on('end', function() {
+          console.log(req.rawBody);
+          ggg(res)
+        });
+      });
+      app.get('/some/path', function(req, res) {
+        // console.log(req.query);
+        // console.log(req._parsedUrl);
+        // console.log(req.client);
+        ggg(res)
+      });
+    },
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
