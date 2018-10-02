@@ -76,8 +76,7 @@ export default {
     msg: function (n, o) {}
   },
   mounted () {
-    console.log(111)
-    this.$http.post('/some/post', {sss: 'aaa'}).then(res => {
+    this.$http.post('/user/login', {loginID: '123', password: '123'}).then(res => {
       console.log(res)
     })
   }

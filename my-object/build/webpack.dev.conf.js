@@ -15,22 +15,29 @@ const PORT = process.env.PORT && Number(process.env.PORT)
 
 const sql = require('mssql')
 
-async function ggg(res) {
+async function ggg(res,params) {
     try {
+        let userName = params.loginID
+        let userPassword = params.password
         await sql.connect('mssql://sa:zx156239@211.149.182.30:1433/jjrj')
-        const result = await sql.query`select * from BlogUsers`
+        let str = `select * from BlogUsers where userName = '${userName}' and userPassword = '${userPassword}'`
+        console.log(str);
+        const result = await sql.query(str)
+        if(result.rowsAffected[0]<1){
+          throw "name or password is wrong"
+        }
         let restful = {
           rc:1,
-          rm:"请求成功",
+          rm:"login success",
           rs:result
         }
         res.json(restful);
     } catch (err) {
         // ... error checks
         let restful = {
-          rc:1,
-          rm:"请求错误",
-          rs:err
+          rc:0,
+          rm:err,
+          rs:{}
         }
         res.json(restful);
     } finally {
@@ -48,14 +55,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   // these devServer options should be customized in /config/index.js
   devServer: {
     before: function(app) {
-      app.post('/some/post', function(req, res) {
+      app.post('/user/login', function(req, res) {
         req.rawBody = ''
         req.on('data', function(chunk) {
             req.rawBody += chunk;
         });
         req.on('end', function() {
           console.log(req.rawBody);
-          ggg(res)
+          let params = JSON.parse(req.rawBody)
+          ggg(res,params)
         });
       });
       app.get('/some/path', function(req, res) {
