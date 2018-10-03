@@ -53,14 +53,14 @@ export default {
       if (this.ename === '' || this.epassword === '') {
         alert('请输入账号或密码')
       }
-      //  const data={ename:this.ename,epassword:this.epassword}
-      //  this.$http.post('http://192.168.1.1:3000/users',data).then(function(res){
-      //  console.log(res);
-      //  this.$router.push({name:'home',params:{id:this.ename}})
-      //  })
-      else if (this.ename && this.epassword == '123') {
-        this.$router.push({name: 'home', params: {id: this.ename}})
-      }
+        var data={loginID: '123', password: '123'};
+        this.$http.post("/some/post",data).then(function(res){
+        console.log(res);
+       this.$router.push({name:'home',params:{id:this.ename}})
+       })
+    //  else if (this.ename && this.epassword == '123') {
+      //  this.$router.push({name: 'home', params: {id: this.ename}})
+    //  }
     },
     Register () {},
     showlogin () {
