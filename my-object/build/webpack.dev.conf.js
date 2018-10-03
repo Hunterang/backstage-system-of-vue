@@ -14,12 +14,22 @@ const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
 const sql = require('mssql')
-
-async function ggg(res,params) {
+async function connectDatebase() {
+  await sql.connect('mssql://sa:zx156239@211.149.182.30:1433/jjrj')
+}
+function backData(res,rc,rm,rs) {
+  let restful = {
+    rc:rc,
+    rm:rm,
+    rs:rs
+  }
+  res.json(restful);
+}
+async function userLogin(res,params) {
     try {
         let userName = params.loginID
         let userPassword = params.password
-        await sql.connect('mssql://sa:zx156239@211.149.182.30:1433/jjrj')
+        await connectDatebase()
         let str = `select * from BlogUsers where userName = '${userName}' and userPassword = '${userPassword}'`
         console.log(str);
         const result = await sql.query(str)
@@ -44,7 +54,21 @@ async function ggg(res,params) {
       sql.close()
     }
 }
+async function setInfo(res,params) {
+  let {emil,phone,hobby,birthday,loginID} = params || {}
+  try {
+    await connectDatebase()
+    let str = `update BlogUsers set e_mail='${emil||'xxx@qq.com'}',born='${birthday||"1900/01/01"}',phone=${phone||10086},hobby='${hobby||'暂无介绍'}' from BlogUsers where userID = '${loginID}'`
+    console.log(str);
+    const result = await sql.query(str)
+    backData(res,1,"success",{})
+  } catch (e) {
+    backData(res,0,"error",e)
 
+  } finally {
+    sql.close()
+  }
+}
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
@@ -63,14 +87,19 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         req.on('end', function() {
           console.log(req.rawBody);
           let params = JSON.parse(req.rawBody)
-          ggg(res,params)
+          userLogin(res,params)
         });
       });
-      app.get('/some/path', function(req, res) {
-        // console.log(req.query);
-        // console.log(req._parsedUrl);
-        // console.log(req.client);
-        ggg(res)
+      app.post('/user/setInfo', function(req, res) {
+        req.rawBody = ''
+        req.on('data', function(chunk) {
+            req.rawBody += chunk;
+        });
+        req.on('end', function() {
+          console.log(req.rawBody);
+          let params = JSON.parse(req.rawBody)
+          setInfo(res,params)
+        });
       });
     },
     clientLogLevel: 'warning',
