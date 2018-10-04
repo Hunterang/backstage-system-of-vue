@@ -23,7 +23,7 @@
         </nav>
         <section>
         <div class="section">
-        <router-view></router-view>
+        <router-view :info='info'></router-view>
         </div>
         </section>
     </div>
@@ -31,6 +31,10 @@
 </template>
 
 <script>
+export default {
+  props:['info'],
+}
+
 </script>
 
 
@@ -102,40 +106,8 @@
     margin-left:10px;
   }
   .section{
-  width:90%;
-  height:618px;
-  background:rgb(238,240,243);
+    width:90%;
+    height:618px;
+    background:rgb(238,240,243);
   }
 </style>
-  <style>
-  .self-mian{
-      background:#fff;
-      width:47%;
-      height:289px;
-      margin-left:2%;
-      margin-top:17px;
-      float:left;
-    }
-    .self-mian dt{
-    margin-top:2%;
-      text-align:center;
-      font-size:1.2em;
-    }
-    .self-mian dd{
-    padding-left:5%;
-    margin-top:5%;
-    }
-    .self-toggle div{
-    border:1px solid #fff;
-    }
-    .self-main-sp{
-      border:none;
-      padding:5px 0 5px 10%;
-      width:70%;
-      margin-top:2%;
-      border-bottom:1px solid #F0E68C;
-      text-aligin:center;
-      outline:none;
-      disabled:true;
-    }
-  </style>

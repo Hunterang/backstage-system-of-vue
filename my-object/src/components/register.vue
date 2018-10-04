@@ -37,6 +37,7 @@ export default {
       ename: '',
       epassword: '',
       newname: '',
+      // userinfor:{},
       newpassword: ''
     }
   },
@@ -53,10 +54,16 @@ export default {
       if (this.ename === '' || this.epassword === '') {
         alert('请输入账号或密码')
       }
-        var data={loginID: '123', password: '123'};
-        this.$http.post("/some/post",data).then(function(res){
-        console.log(res);
-       this.$router.push({name:'home',params:{id:this.ename}})
+        var data={loginID: this.ename, password:this.epassword};
+        this.$http.post("/user/login",data).then(function(res){
+          if (res.body.rc==1) {
+            var data=res.body.rs.recordset[0];
+            console.log(data);
+            this.$emit("givedata",data)
+            this.$router.push({name:'home',params:{id:this.ename}})
+          }else{
+            alert(res.body.rm)
+          }
        })
     //  else if (this.ename && this.epassword == '123') {
       //  this.$router.push({name: 'home', params: {id: this.ename}})
@@ -75,11 +82,14 @@ export default {
   watch: {
     msg: function (n, o) {}
   },
-  mounted () {
-    this.$http.post('/user/login', {loginID: '123', password: '123'}).then(res => {
-      console.log(res)
-    })
-  }
+  // mounted () {
+  //   this.$http.post('/user/login', {loginID: '123', password: '123'}).then(res => {
+  //     console.log(res)
+  //     if (true) {
+  //
+  //     }
+  //   })
+  // }
 }
 </script>
 
