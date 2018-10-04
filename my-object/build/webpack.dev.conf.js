@@ -69,6 +69,25 @@ async function setInfo(res,params) {
     sql.close()
   }
 }
+async function userRegister(res,params) {
+  let {loginID,password} = params || {}
+  try {
+    await connectDatebase()
+    const validate = await sql.query(`select * from BlogUsers where loginID = '${loginID}'`)
+    if(validate.rowsAffected[0]>0){
+      throw "用户名已存在"
+    }
+    let str = `insert into BlogUsers (userName,userID,loginID,userPassword) values ('${loginID}',newid(),'${loginID}','${password||123}')`
+    console.log(str);
+    const result = await sql.query(str)
+    backData(res,1,"success",{})
+  } catch (e) {
+    backData(res,0,"error",e)
+
+  } finally {
+    sql.close()
+  }
+}
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
@@ -99,6 +118,18 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           console.log(req.rawBody);
           let params = JSON.parse(req.rawBody)
           setInfo(res,params)
+        });
+      });
+      app.post('/user/register', function(req, res) {
+        req.rawBody = ''
+        req.on('data', function(chunk) {
+            req.rawBody += chunk;
+        });
+        req.on('end', function() {
+          console.log(req.rawBody);
+          console.log("******");
+          let params = JSON.parse(req.rawBody)
+          userRegister(res,params)
         });
       });
     },
